@@ -22,3 +22,6 @@ def get_pig(user_id: int) -> Pig | None:
 def save_pig(pig: Pig):
     pigs[pig.user_id] = pig
     save_db()
+
+def get_all_pigs():
+    return list(pigs.values())
