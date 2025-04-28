@@ -24,13 +24,18 @@ async def feed_handler(message: types.Message):
         await message.answer(f"Сьогодні твого хряка вже годували {pig.feeds_today} раз(и). Більше годувати не можна!")
         return
 
-    # Перевіряємо проміжок між годуваннями (мінімум 1 година)
+       # Перевіряємо проміжок між годуваннями (мінімум 3 хвилини для тестів)
     if pig.last_feed_time:
         last_feed_dt = datetime.fromisoformat(pig.last_feed_time)
-        if now - last_feed_dt < timedelta(hours=1):
-            minutes_left = 60 - (now - last_feed_dt).seconds // 60
-            await message.answer(f"Ще рано годувати! Спробуй через {minutes_left} хвилин.")
+        elapsed = (now - last_feed_dt).total_seconds()
+
+        cooldown_seconds = 0.1 * 60  # 3 хвилини = 180 секунд
+
+        if elapsed < cooldown_seconds:
+            minutes_left = int((cooldown_seconds - elapsed) // 60) + 1  # округлюємо вгору
+            await message.answer(f"Ще рано годувати! Спробуй через {minutes_left} хвилин(и).")
             return
+
 
     # Якщо все ок — годуємо
     feed_pig(pig)

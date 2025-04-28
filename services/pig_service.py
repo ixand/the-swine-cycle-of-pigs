@@ -6,9 +6,12 @@ def init_pig(user_id: int) -> Pig:
     return Pig(user_id=user_id)
 
 def feed_pig(pig: Pig):
-    pig.weight += random.randint(1, 5)
+    pig.weight += random.randint(1, 11)
     if random.randint(0, 9) < 2:
         pig.strength += 1
+     # При годуванні додаємо здоров'я
+    health_increase = random.randint(5, 15) 
+    pig.health = min(pig.health + health_increase, get_max_health(pig))
 
 def calculate_age_in_months(birth_date: str) -> int:
     birth = datetime.strptime(birth_date, "%Y-%m-%d")
@@ -72,3 +75,8 @@ def get_rank(pig: Pig) -> str:
         return "Молодий кабан 🐗"
     else:
         return "Маленький поросятко 🐖"
+    
+def get_max_health(pig: Pig) -> int:
+    """Розраховує максимальне здоров'я хряка залежно від рівня."""
+    return 100 + (pig.level - 1) * 10
+
