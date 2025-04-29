@@ -29,7 +29,7 @@ async def feed_handler(message: types.Message):
         last_feed_dt = datetime.fromisoformat(pig.last_feed_time)
         elapsed = (now - last_feed_dt).total_seconds()
 
-        cooldown_seconds = 0.1 * 60  # 3 хвилини = 180 секунд
+        cooldown_seconds = 0.1 * 60  # 60 хвилин
 
         if elapsed < cooldown_seconds:
             minutes_left = int((cooldown_seconds - elapsed) // 60) + 1  # округлюємо вгору

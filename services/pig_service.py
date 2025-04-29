@@ -30,25 +30,9 @@ def get_allowed_feedings(pig: Pig) -> int:
     else:
         return 2  # Дорослі свині
     
-def fight(pig1: Pig, pig2: Pig) -> Pig:
+def attack(pig1: Pig, pig2: Pig) -> Pig:
     """Функція для проведення бою між двома хряками. Повертає переможця."""
-    health1 = pig1.health
-    health2 = pig2.health
-
-    while health1 > 0 and health2 > 0:
-        # Перший атакує другого
-        damage1 = max(1, pig1.strength * random.uniform(0.7, 7.3))
-        health2 -= damage1
-        if health2 <= 0:
-            return pig1
-        
-        # Другий атакує першого
-        damage2 = max(1, pig2.strength * random.uniform(0.7, 7.3))
-        health1 -= damage2
-        if health1 <= 0:
-            return pig2
-
-    return pig1 if health1 > health2 else pig2
+    return random.choice([pig1, pig2])
 
 def check_level_up(pig: Pig):
     """Перевіряє і підвищує рівень хряка, якщо накопичено достатньо XP."""
@@ -80,3 +64,19 @@ def get_max_health(pig: Pig) -> int:
     """Розраховує максимальне здоров'я хряка залежно від рівня."""
     return 100 + (pig.level - 1) * 10
 
+def fight(pig1: Pig, pig2: Pig):
+    """Проводить спаринг за спеціальною формулою і повертає (переможця, програвшого, переданий XP)."""
+    score1 = pig1.level * pig1.strength * random.choice([0.5, 1.5]) + pig1.health
+    score2 = pig2.level * pig2.strength * random.choice([0.5, 1.5]) + pig2.health
+
+    if score1 > score2:
+        winner, loser = pig1, pig2
+    else:
+        winner, loser = pig2, pig1
+
+    xp_transfer = max(5, min(15, loser.xp // 5))  # передається від 5 до 15 XP
+
+    winner.xp += xp_transfer
+    loser.xp = max(0, loser.xp - xp_transfer)
+
+    return winner, loser, xp_transfer
