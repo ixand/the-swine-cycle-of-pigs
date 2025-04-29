@@ -40,18 +40,10 @@
 
 ## 🚀 Як запустити локально
 
-1. Клонуй репозиторій:
+1. Клонуй репозиторій: git clone https://github.com/ixand/the-swine-cycle-of-pigs.git
 
-git clone https://github.com/твій-юзернейм/pigkeeper-bot.git
-cd pigkeeper-bot
+2. Встанови залежності: pip install -r requirements.txt
 
-2. Встанови залежності:
+3. Створи .env файл і додай свій Telegram токен: BOT_TOKEN=твій_бот_токен
 
-pip install -r requirements.txt
-3. Створи .env файл і додай свій Telegram токен:
-
-BOT_TOKEN=твій_бот_токен
-
-Запусти бота:
-
-python main.py
+4. Запусти бота: python main.py
