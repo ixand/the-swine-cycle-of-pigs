@@ -1,7 +1,7 @@
 from aiogram import types
 from storage import db
 from services.pig_service import check_level_up, get_rank, attack
-from datetime import datetime, timedelta
+from datetime import datetime
 import random
 
 async def attack_handler(message: types.Message):
@@ -26,7 +26,7 @@ async def attack_handler(message: types.Message):
         await message.answer("У опонента немає хряка!")
         return
 
-    # Лімітуємо бої на день
+    # Ліміт боїв
     today = datetime.now().strftime("%Y-%m-%d")
     if pig1.last_fight_date != today:
         pig1.fights_today = 0
@@ -38,48 +38,47 @@ async def attack_handler(message: types.Message):
 
     # Атака
     winner = attack(pig1, pig2)
-    winner.xp += 10 + random.randint(1,9)
+    winner.xp += 10 + random.randint(1, 9)
     pig1.fights_today += 1
 
-    # Якщо програв — мінус здоров'я
+    # Мінус здоров’я програвшому
     loser = pig2 if winner.user_id == pig1.user_id else pig1
     health_loss = 10 + random.randint(1, 9)
 
     if loser.health <= 10 and health_loss >= 10:
-        # Помирає — обнуляємо
         loser.level = 1
         loser.xp = 0
         loser.health = 100
         text_death = f"☠️ {loser.name} помер у бою і був відроджений на рівні 1!"
-    
-        
     else:
-        # Просто втрачає здоров'я
         loser.health = max(1, loser.health - health_loss)
         text_death = f"{loser.name} втратив {health_loss} ❤️."
 
     db.save_pig(pig1)
     db.save_pig(pig2)
 
-    # Формуємо текст
+    # Базове повідомлення про бій
     if winner.user_id == user_id:
-        text = f"🎉 Твій хряк {pig1.name} переміг {pig2.name} у нечесному бою!"
+        text = f"🎉 Твій хряк {pig1.name} переміг {pig2.name} у чесному бою!"
     else:
         text = f"😢 Твого хряка {pig1.name} переміг {pig2.name}..."
 
-    
-    old_level = winner.level  # зберігаємо попередній рівень
-    level_ups = check_level_up(winner)
+    await message.answer(text)
+    await message.answer(text_death)
 
+    # 🔔 Перевірка підвищення рівня
+    level_ups = check_level_up(winner)
     if level_ups > 0:
         level_text = (
-        f"🏅 Твій хряк підняв рівень на {level_ups}!\n"
-        f"➕ Сила +{level_ups}, Здоров'я +{level_ups * 10}"
-    )
+            f"🏅 Твій хряк підняв рівень на {level_ups}!\n"
+            f"➕ Сила +{level_ups}, Здоров'я +{level_ups * 10}"
+        )
 
-    new_level = old_level + level_ups
-    if new_level in (5, 10, 20):
-        new_rank = get_rank(winner)
-        level_text += f"\n🎖️ Вітаємо! Твій хряк досяг рангу: {new_rank}!"
+        # Перевірка на новий ранг
+        new_rank = None
+        if winner.level in (5, 10, 20):
+            new_rank = get_rank(winner)
+            level_text += f"\n🎖️ Вітаємо! Твій хряк досяг рангу: {new_rank}!"
 
-    await message.answer(level_text)  # окреме повідомлення
+        db.save_pig(winner)
+        await message.answer(level_text)
