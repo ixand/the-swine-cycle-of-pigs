@@ -1,0 +1,11 @@
+# render.yaml
+services:
+  - type: web
+    name: pigkeeper-bot
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
+    envVars:
+      - key: TELEGRAM_TOKEN
+        value: ""

@@ -44,5 +44,5 @@ async def feed_handler(message: types.Message):
     db.save_pig(pig)
 
     await message.answer(
-        f"Твій хряк погодуваний!\nНова вага: {pig.weight} кг\nСила: {pig.strength}\nГодувань сьогодні: {pig.feeds_today}/{allowed_feedings}"
+        f"Твій хряк погодований!\nНова вага: {pig.weight} кг\nДосвід {pig.xp}\nСила: {pig.strength}\nГодувань сьогодні: {pig.feeds_today}/{allowed_feedings}"
     )

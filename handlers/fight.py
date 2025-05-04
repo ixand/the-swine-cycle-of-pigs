@@ -15,7 +15,7 @@ async def sparring_request_handler(message: types.Message):
     if not pig:
         await message.answer("Ти ще не маєш хряка! Використай /start")
         return
-
+    
     # Створюємо кнопку для прийняття виклику
     builder = InlineKeyboardBuilder()
     builder.button(text="Прийняти виклик 🐖", callback_data=f"accept_sparring:{user_id}")
@@ -51,6 +51,10 @@ async def sparring_accept_handler(callback: types.CallbackQuery):
         return
 
     # Перевіряємо здоров'я
+    if pig1.health < 13:
+        await callback.answer("У тебе недостатньо здоров'я для спарингу! Потрібно мінімум 13 ❤️.", show_alert=True)
+        return
+    
     if pig2.health < 13:
         await callback.answer("У тебе недостатньо здоров'я для спарингу! Потрібно мінімум 13 ❤️.", show_alert=True)
         return
@@ -62,6 +66,8 @@ async def sparring_accept_handler(callback: types.CallbackQuery):
 
     # Бій
     winner, loser, xp_transfer = fight(pig1, pig2)
+
+
 
     db.save_pig(pig1)
     db.save_pig(pig2)

@@ -12,6 +12,8 @@ def feed_pig(pig: Pig):
      # При годуванні додаємо здоров'я
     health_increase = random.randint(5, 15) 
     pig.health = min(pig.health + health_increase, get_max_health(pig))
+    pig.xp += 10 + random.randint(1, 5) 
+    check_level_up(pig)
 
 def calculate_age_in_months(birth_date: str) -> int:
     birth = datetime.strptime(birth_date, "%Y-%m-%d")
@@ -58,7 +60,7 @@ def get_rank(pig: Pig) -> str:
     elif pig.level >= 5:
         return "Молодий кабан 🐗"
     else:
-        return "Маленький поросятко 🐖"
+        return "Маленьке поросятко 🐖"
     
 def get_max_health(pig: Pig) -> int:
     """Розраховує максимальне здоров'я хряка залежно від рівня."""
@@ -66,8 +68,8 @@ def get_max_health(pig: Pig) -> int:
 
 def fight(pig1: Pig, pig2: Pig):
     """Проводить спаринг за спеціальною формулою і повертає (переможця, програвшого, переданий XP)."""
-    score1 = pig1.level * pig1.strength * random.choice([0.5, 1.5]) + pig1.health
-    score2 = pig2.level * pig2.strength * random.choice([0.5, 1.5]) + pig2.health
+    score1 = pig1.level * pig1.strength * random.choice([0.5, 17.5]) + pig1.health
+    score2 = pig2.level * pig2.strength * random.choice([0.5, 17.5]) + pig2.health
 
     if score1 > score2:
         winner, loser = pig1, pig2

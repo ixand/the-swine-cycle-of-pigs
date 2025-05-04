@@ -13,7 +13,7 @@ async def attack_handler(message: types.Message):
         return
 
     if not message.reply_to_message:
-        await message.answer("Щоб битися, відповідай на повідомлення іншого гравця командою /fight.")
+        await message.answer("Щоб битися, відповідай на повідомлення іншого гравця командою /attack.")
         return
 
     opponent_id = message.reply_to_message.from_user.id
@@ -38,7 +38,7 @@ async def attack_handler(message: types.Message):
 
     # Атака
     winner = attack(pig1, pig2)
-
+    winner.xp += 10 + random.randint(1,9)
     pig1.fights_today += 1
 
     # Якщо програв — мінус здоров'я
@@ -51,6 +51,8 @@ async def attack_handler(message: types.Message):
         loser.xp = 0
         loser.health = 100
         text_death = f"☠️ {loser.name} помер у бою і був відроджений на рівні 1!"
+    
+        
     else:
         # Просто втрачає здоров'я
         loser.health = max(1, loser.health - health_loss)
@@ -61,17 +63,23 @@ async def attack_handler(message: types.Message):
 
     # Формуємо текст
     if winner.user_id == user_id:
-        text = f"🎉 Твій хряк {pig1.name} переміг {pig2.name} у чесному бою!"
+        text = f"🎉 Твій хряк {pig1.name} переміг {pig2.name} у нечесному бою!"
     else:
         text = f"😢 Твого хряка {pig1.name} переміг {pig2.name}..."
 
+    
+    old_level = winner.level  # зберігаємо попередній рівень
     level_ups = check_level_up(winner)
-    if level_ups > 0:
-        text += f"\n🏅 Твій хряк підняв рівень на {level_ups}!\n➕ Сила +{level_ups}, Здоров'я +{level_ups * 10}\n"
-     # Перевірка на новий ранг
-    if winner.level in (5, 10, 20):
-        new_rank = get_rank(winner)
-        text += f"🎖️ Вітаємо! Твій хряк досяг рангу: {new_rank}!"
-    text += f"\n\n{text_death}"
 
-    await message.answer(text)
+    if level_ups > 0:
+        level_text = (
+        f"🏅 Твій хряк підняв рівень на {level_ups}!\n"
+        f"➕ Сила +{level_ups}, Здоров'я +{level_ups * 10}"
+    )
+
+    new_level = old_level + level_ups
+    if new_level in (5, 10, 20):
+        new_rank = get_rank(winner)
+        level_text += f"\n🎖️ Вітаємо! Твій хряк досяг рангу: {new_rank}!"
+
+    await message.answer(level_text)  # окреме повідомлення
