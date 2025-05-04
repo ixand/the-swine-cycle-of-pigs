@@ -1,6 +1,6 @@
 # render.yaml
 services:
-  - type: web
+  - type: worker
     name: pigkeeper-bot
     env: python
     plan: free
