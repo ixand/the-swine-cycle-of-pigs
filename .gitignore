@@ -9,5 +9,3 @@ __pycache__/
 .vscode/
 .idea/
 
-# Ігнорувати базу даних (якщо зберігаєш у JSON)
-pigs.json
