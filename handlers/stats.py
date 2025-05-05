@@ -18,6 +18,7 @@ async def stats_handler(message: types.Message):
         f"📈 Рівень: {pig.level}\n"
         f"✨ Досвід: {pig.xp} XP\n"
         f"⚔️ Сила: {pig.strength}\n"
+        f"🧠 Розум: {pig.mind}\n"
         f"❤️ Здоров'я: {pig.health}\n"
         f"🪙 Золото: {pig.gold}\n"
         f"⚖️ Вага: {pig.weight} кг"

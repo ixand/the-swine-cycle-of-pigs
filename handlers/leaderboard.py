@@ -13,6 +13,6 @@ async def leaderboard_handler(message: types.Message):
 
     text = "🏆 Топ хряків:\n"
     for idx, pig in enumerate(top_pigs, start=1):
-        text += f"{idx}. {pig.name} — рівень {pig.level}, вага {pig.weight}, сила {pig.strength}\n"
+        text += f"{idx}. {pig.name} — рівень {pig.level}, вага {pig.weight}, сила {pig.strength}, розум {pig.mind}\n"
 
     await message.answer(text)

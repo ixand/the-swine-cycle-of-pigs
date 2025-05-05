@@ -1,9 +1,9 @@
+import asyncio
+import random
 from aiogram import types
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from storage import db
-from services.pig_service import fight
-from services.pig_service import check_level_up, get_rank
-import random
+from services.pig_service import fight, check_level_up, get_rank
 
 # Тимчасова пам'ять активних спарингів
 pending_sparrings = {}
@@ -15,12 +15,11 @@ async def sparring_request_handler(message: types.Message):
     if not pig:
         await message.answer("Ти ще не маєш хряка! Використай /start")
         return
-    
-    # Створюємо кнопку для прийняття виклику
+
     builder = InlineKeyboardBuilder()
     builder.button(text="Прийняти виклик 🐖", callback_data=f"accept_sparring:{user_id}")
 
-    pending_sparrings[user_id] = True  # Запам'ятовуємо, що виклик активний
+    pending_sparrings[user_id] = True
 
     await message.answer(
         f"🐷 {pig.name} викликає на спаринг!\nНатисни кнопку, щоб прийняти виклик!",
@@ -28,6 +27,8 @@ async def sparring_request_handler(message: types.Message):
     )
 
 async def sparring_accept_handler(callback: types.CallbackQuery):
+    await callback.answer()  # Обов'язково одразу, щоб Telegram не викидав помилку
+
     data = callback.data
     if not data.startswith("accept_sparring:"):
         return
@@ -36,55 +37,58 @@ async def sparring_accept_handler(callback: types.CallbackQuery):
     challenger_id = callback.from_user.id
 
     if opponent_id == challenger_id:
-        await callback.answer("Не можна приймати свій власний виклик!")
-        return
+        return await callback.message.answer("Не можна приймати свій власний виклик!")
 
     if opponent_id not in pending_sparrings:
-        await callback.answer("Цей виклик уже не активний або був прийнятий.")
-        return
+        return await callback.message.answer("Цей виклик уже не активний або був прийнятий.")
 
     pig1 = db.get_pig(opponent_id)
     pig2 = db.get_pig(challenger_id)
 
     if not pig1 or not pig2:
-        await callback.message.answer("Один з учасників не має хряка!")
-        return
+        return await callback.message.answer("Один з учасників не має хряка!")
 
-    # Перевіряємо здоров'я
-    if pig1.health < 13:
-        await callback.answer("У тебе недостатньо здоров'я для спарингу! Потрібно мінімум 13 ❤️.", show_alert=True)
-        return
-    
-    if pig2.health < 13:
-        await callback.answer("У тебе недостатньо здоров'я для спарингу! Потрібно мінімум 13 ❤️.", show_alert=True)
-        return
+    if pig1.health < 13 or pig2.health < 13:
+        return await callback.message.answer("У одного з хряків недостатньо здоров'я для спарингу (мінімум 13 ❤️).")
 
-    # Видаляємо активний виклик і кнопку
     del pending_sparrings[opponent_id]
+    await callback.message.edit_reply_markup(reply_markup=None)
 
-    await callback.message.edit_reply_markup(reply_markup=None)  # Видаляємо кнопку
+    # Унікальні сценарії бою з обов'язковими і додатковими етапами
+    base_events = [
+        f"{pig1.name} різко атакує — класичний початок!",
+        f"{pig2.name} ухиляється і робить підсічку!",
+        f"Сутичка набирає обертів, гримлять підкови і каплють піт...",
+        f"{pig1.name} ледь встигає зреагувати на хитрий маневр суперника!",
+        f"{pig2.name} тим часом використовує свою масу на повну!",
+        f"Несподівано {pig1.name} видає комбо!",
+        f"{pig2.name} на мить завмирає, але знаходить в собі сили продовжити!",
+        f"Останній удар... хто ж переможе?!"
+    ]
 
-    # Бій
+    # Додаємо рандомну кількість подій (мін 5, макс 8)
+    fight_script = random.sample(base_events, k=random.randint(5, len(base_events)))
+
+    for line in fight_script:
+        await callback.message.answer(line)
+        await asyncio.sleep(random.uniform(2.5, 4.5))
+
+    # Фінал бою
     winner, loser, xp_transfer = fight(pig1, pig2)
-
-
-
     db.save_pig(pig1)
     db.save_pig(pig2)
 
-    text = (
-        f"⚔️ Спаринг між {pig1.name} та {pig2.name} завершено!\n"
-        f"🏆 Переможець: {winner.name}\n"
-        f"➕ Переможець отримує {xp_transfer} XP.\n"
-        f"➖ Переможений втрачає {xp_transfer} XP."
+    result_text = (
+        f"\n🏁 Спаринг завершено!\n"
+        f"🏆 Переможець: <b>{winner.name}</b>\n"
+        f"➕ Отримано {xp_transfer} XP\n"
+        f"➖ Програв {xp_transfer} XP"
     )
 
     level_ups = check_level_up(winner)
     if level_ups > 0:
-        text += f"\n🏅 Твій хряк підняв рівень на {level_ups}!\n➕ Сила +{level_ups}, Здоров'я +{level_ups * 10}\n"
-     # Перевірка на новий ранг
-    if winner.level in (5, 10, 20):
-        new_rank = get_rank(winner)
-        text += f"🎖️ Вітаємо! Твій хряк досяг рангу: {new_rank}!"
-    await callback.message.answer(text)
-    await callback.answer()
+        result_text += f"\n📈 Рівень підвищено на {level_ups}!"
+        if winner.level in (5, 10, 20):
+            result_text += f"\n🎖️ Новий ранг: {get_rank(winner)}!"
+
+    await callback.message.answer(result_text, parse_mode="HTML")

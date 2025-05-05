@@ -6,8 +6,10 @@ class Pig:
     user_id: int
     name: str = "Безіменний"
     weight: int = 1
+    mind: int = 1
     strength: int = 1
     health: int = 100
+    max_health: int = 100
     level: int = 1
     xp: int = 1
     gold: int = 0  # нове поле для нагород з квестів
