@@ -73,8 +73,8 @@ def get_rank(pig: Pig) -> str:
         return "Маленьке поросятко 🐖"
 
 def fight(pig1: Pig, pig2: Pig) -> Tuple[Pig | None, Pig | None, int]:
-    score1 = pig1.strength * 1.5 + pig1.mind + (pig1.weight / 10) + pig1.health 
-    score2 = pig2.strength * 1.5 + pig2.mind + (pig2.weight / 10) + pig2.health 
+    score1 = pig1.strength * 1.5 + pig1.mind + (pig1.weight / 10)+ pig1.health / 10 + random.uniform(0, 5)
+    score2 = pig2.strength * 1.5 + pig2.mind + (pig2.weight / 10) + pig2.health / 10 + random.uniform(0, 5)
 
     if abs(score1 - score2) < 0.1:
         return None, None, 0  # нічия
