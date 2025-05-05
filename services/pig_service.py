@@ -15,22 +15,17 @@ def feed_pig(pig: Pig):
     pig.xp += 10 + random.randint(1, 5) 
     check_level_up(pig)
 
-def calculate_age_in_months(birth_date: str) -> int:
-    birth = datetime.strptime(birth_date, "%Y-%m-%d")
-    now = datetime.now()
-    return (now.year - birth.year) * 12 + now.month - birth.month
-
 def get_allowed_feedings(pig: Pig) -> int:
-    months = calculate_age_in_months(pig.birth_date)
-
-    if months < 2:
-        return 5  # Поросята до 2 місяців
-    elif 2 <= months < 4:
-        return 4  # Підсвинки 2-4 міс
-    elif 4 <= months < 6:
-        return 3  # Свині на відгодівлі
+    """Повертає кількість дозволених годувань на день залежно від рангу (рівня)."""
+    if pig.level < 5:
+        return 5  # Маленьке поросятко 🐖
+    elif 5 <= pig.level < 10:
+        return 4  # Молодий кабан 🐗
+    elif 10 <= pig.level < 20:
+        return 3  # Могутній хряк 🐽
     else:
-        return 2  # Дорослі свині
+        return 2  # Легенда ферми 🐲
+
     
 def attack(pig1: Pig, pig2: Pig) -> Pig:
     """Функція для проведення бою між двома хряками. Повертає переможця."""

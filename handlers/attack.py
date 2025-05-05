@@ -59,7 +59,7 @@ async def attack_handler(message: types.Message):
 
     # Базове повідомлення про бій
     if winner.user_id == user_id:
-        text = f"🎉 Твій хряк {pig1.name} переміг {pig2.name} у чесному бою!"
+        text = f"🎉 Твій хряк {pig1.name} переміг {pig2.name} у нечесному бою!"
     else:
         text = f"😢 Твого хряка {pig1.name} переміг {pig2.name}..."
 

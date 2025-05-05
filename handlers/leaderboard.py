@@ -9,10 +9,10 @@ async def leaderboard_handler(message: types.Message):
         return
 
     # Сортуємо за XP
-    top_pigs = sorted(all_pigs, key=lambda p: (p.level, p.xp), reverse=True)[:10]
+    top_pigs = sorted(all_pigs, key=lambda p: (p.level, p.weight), reverse=True)[:10]
 
     text = "🏆 Топ хряків:\n"
     for idx, pig in enumerate(top_pigs, start=1):
-        text += f"{idx}. {pig.name} — рівень {pig.level}, досвід {pig.xp}\n"
+        text += f"{idx}. {pig.name} — рівень {pig.level}, вага {pig.weight}, сила {pig.strength}\n"
 
     await message.answer(text)
