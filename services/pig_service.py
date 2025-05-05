@@ -6,21 +6,24 @@ import random
 def init_pig(user_id: int) -> Pig:
     return Pig(user_id=user_id)
 
-def feed_pig(pig: Pig):
+def feed_pig(pig: Pig) -> Tuple[int, str | None]:
     pig.weight += random.randint(1, 11)
 
-    # Іноді дає бонус до сили
     if random.randint(0, 9) < 2:
         pig.strength += 1
 
-    # Відновлення здоров’я
     health_increase = random.randint(5, 15)
     pig.health = min(pig.health + health_increase, pig.max_health)
 
-    # Досвід
     pig.xp += 10 + random.randint(1, 5)
+    level_ups = check_level_up(pig)
 
-    check_level_up(pig)
+    rank_msg = None
+    if level_ups and pig.level in (5, 10, 20):
+        rank_msg = get_rank(pig)
+
+    return level_ups, rank_msg
+
 
 def get_allowed_feedings(pig: Pig) -> int:
     """Повертає кількість дозволених годувань на день залежно від рангу (рівня)."""
@@ -69,18 +72,15 @@ def get_rank(pig: Pig) -> str:
     else:
         return "Маленьке поросятко 🐖"
 
-def fight(pig1: Pig, pig2: Pig) -> Tuple[Pig, Pig, int]:
-    """Чесний спаринг — сила важливіша, але розум теж враховується."""
-    score1 = pig1.strength * 1.5 + pig1.mind + pig1.weight + pig1.health / 10 + random.uniform(0, 5)
-    score2 = pig2.strength * 1.5 + pig2.mind + pig2.weight + pig2.health / 10 + random.uniform(0, 5)
-    
-    if score1 > score2:
-        winner, loser = pig1, pig2
-    else:
-        winner, loser = pig2, pig1
+def fight(pig1: Pig, pig2: Pig) -> Tuple[Pig | None, Pig | None, int]:
+    score1 = pig1.strength * 1.5 + pig1.mind + (pig1.weight / 10) + pig1.health 
+    score2 = pig2.strength * 1.5 + pig2.mind + (pig2.weight / 10) + pig2.health 
 
+    if abs(score1 - score2) < 0.1:
+        return None, None, 0  # нічия
+
+    winner, loser = (pig1, pig2) if score1 > score2 else (pig2, pig1)
     xp_transfer = max(5, min(15, loser.xp // 5))
     winner.xp += xp_transfer
     loser.xp = max(0, loser.xp - xp_transfer)
     return winner, loser, xp_transfer
-

@@ -38,11 +38,21 @@ async def feed_handler(message: types.Message):
 
 
     # Якщо все ок — годуємо
-    feed_pig(pig)
+    
     pig.feeds_today += 1
     pig.last_feed_time = now.isoformat()
+    level_ups, new_rank = feed_pig(pig)
     db.save_pig(pig)
+
+    text = f"🍽️ {pig.name} поїв і став важчим!\n"
+
+    if level_ups:
+        text += f"\n📈 Рівень підвищено на {level_ups}!"
+    if new_rank:
+        text += f"\n🎖️ Новий ранг: {new_rank}!"
 
     await message.answer(
         f"Твій хряк погодований!\nНова вага: {pig.weight} кг\nДосвід {pig.xp}\nСила: {pig.strength}\nГодувань сьогодні: {pig.feeds_today}/{allowed_feedings}"
     )
+
+    await message.answer(text)
