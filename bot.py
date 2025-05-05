@@ -13,6 +13,8 @@ def setup_handlers():
     router.message.register(quest.quest_handler, Command("quest"))
     router.message.register(mining.mining_handler, Command("mining"))
     router.message(Command("leaderboard"))(leaderboard.leaderboard_handler)
+    router.callback_query(lambda c: c.data.startswith("leaderboard_sort:") or c.data.startswith("leaderboard_page:"))(
+    leaderboard.leaderboard_callback_handler)
     router.message(Command("fight"))(fight.sparring_request_handler)
     router.callback_query()(fight.sparring_accept_handler)  # Додаємо колбек на кнопки
     router.message(Command("help"))(help.help_handler)

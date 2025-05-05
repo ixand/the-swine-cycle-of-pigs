@@ -34,7 +34,7 @@ async def mining_handler(message: types.Message):
 
     if "damage" in result:
         pig.health = max(1, pig.health - result["damage"])
-        weight_loss = random.randint(10, 30)
+        weight_loss = random.randint(1, 15)
         pig.weight = max(1, pig.weight - weight_loss)
         text += f"\n💥 Він також схуд на {weight_loss} кг!"
 

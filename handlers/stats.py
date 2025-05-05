@@ -3,17 +3,29 @@ from storage import db
 from services.pig_service import get_rank
 
 async def stats_handler(message: types.Message):
-    user_id = message.from_user.id
+    if message.reply_to_message:
+        target_user = message.reply_to_message.from_user
+        user_id = target_user.id
+        is_self = user_id == message.from_user.id
+    else:
+        user_id = message.from_user.id
+        is_self = True
+
     pig = db.get_pig(user_id)
 
     if not pig:
-        await message.answer("Ти ще не маєш хряка! Використай /start")
+        if is_self:
+            await message.answer("Ти ще не маєш хряка! Використай /start")
+        else:
+            await message.answer("У цього користувача ще немає хряка 🐷")
         return
 
     rank = get_rank(pig)
 
+    owner = "Твій хряк" if is_self else f"Хряк {pig.name} користувача @{target_user.username or target_user.first_name}"
+
     await message.answer(
-        f"🐷 Ім'я: {pig.name}\n"
+        f"{owner}:\n"
         f"🏅 Ранг: {rank}\n"
         f"📈 Рівень: {pig.level}\n"
         f"✨ Досвід: {pig.xp} XP\n"
