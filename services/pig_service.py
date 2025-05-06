@@ -16,13 +16,10 @@ def feed_pig(pig: Pig) -> Tuple[int, str | None]:
     pig.health = min(pig.health + health_increase, pig.max_health)
 
     pig.xp += 10 + random.randint(1, 5)
-    level_ups = check_level_up(pig)
-
-    rank_msg = None
-    if level_ups and pig.level in (5, 10, 20):
-        rank_msg = get_rank(pig)
+    level_ups, rank_msg = check_level_up(pig)  # Тепер отримуємо повідомлення про підвищення рівня
 
     return level_ups, rank_msg
+
 
 
 def get_allowed_feedings(pig: Pig) -> int:
@@ -43,15 +40,19 @@ def attack(pig1: Pig, pig2: Pig) -> Pig:
     return pig1 if score1 > score2 else pig2
 
 
-def check_level_up(pig: Pig) -> int:
+def check_level_up(pig: Pig) -> Tuple[int, str]:
     """Підвищує рівень, якщо вистачає XP. Рандомно додає або силу, або розум."""
     level_ups = 0
+    rank_change_message = ""  # Змінна для зберігання повідомлень про зміну рангу
+    text = ""  # Ініціалізація змінної 'text'
+    
     while pig.xp >= 100:
+        # Визначаємо ранг до підвищення рівня
+        rank_before = get_rank(pig)
+        
         pig.max_health = (pig.level * 10) + 100
         pig.level += 1
         pig.xp -= 100
-       
-        
 
         # Випадковий бонус: або сила, або розум
         if random.choice([True, False]):
@@ -60,7 +61,20 @@ def check_level_up(pig: Pig) -> int:
             pig.mind += 1
 
         level_ups += 1
-    return level_ups
+
+        # Отримуємо ранг після підвищення рівня
+        rank_after = get_rank(pig)
+
+        # Формуємо повідомлення про підвищення рівня
+        text += f"\n📈 Рівень підвищено на {level_ups}!"
+
+        # Якщо ранг змінився, додаємо відповідне повідомлення
+        if rank_before != rank_after:
+            rank_change_message = f"\n🎖️ Ранг змінено: {rank_before} ➔ {rank_after}"
+
+    return level_ups, text + rank_change_message
+
+
 
 def get_rank(pig: Pig) -> str:
     if pig.level >= 20:

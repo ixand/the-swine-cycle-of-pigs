@@ -36,10 +36,9 @@ async def quest_handler(message: types.Message):
         await message.answer(f"Ти можеш пройти квест лише через {hours_remaining} годин(и) та {minutes_remaining} хвилин. Спробуй знову через кілька годин.")
         return
 
-    
-    
     # Виконання квесту
-    quest = apply_quest(pig)
+    quest, level_ups, rank_msg = apply_quest(pig)
+
     db.save_pig(pig)
 
     # Оновлюємо дату та час останнього квесту
@@ -49,5 +48,9 @@ async def quest_handler(message: types.Message):
     # Виводимо текст квесту та нагороду
     text = f"🎯 Квест: *{quest['title']}*\n\n{quest['description']}\n\n🎁 Нагорода: " + \
         ", ".join([f"+{v} {k}" for k, v in quest["effects"].items()])
+
+    # Якщо є повідомлення про підвищення рівня або зміну рангу, додаємо його до відповіді
+    if rank_msg:
+        text += "\n" + rank_msg
     
     await message.answer(text, parse_mode="Markdown")

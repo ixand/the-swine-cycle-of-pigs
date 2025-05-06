@@ -1,5 +1,6 @@
 import random
 from datetime import datetime
+from services.pig_service import check_level_up
 from models.pig import Pig
 
 QUESTS = [
@@ -61,7 +62,10 @@ def apply_quest(pig: Pig):
     for key, value in quest["effects"].items():
         setattr(pig, key, getattr(pig, key) + value)
     
+    # Викликаємо check_level_up і отримуємо повідомлення
+    level_ups, rank_msg = check_level_up(pig)
+
     # Збереження останнього часу квесту
     pig.last_quest_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-    return quest
+    return quest, level_ups, rank_msg  # Повертаємо результат, включаючи повідомлення

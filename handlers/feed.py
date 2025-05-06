@@ -24,7 +24,7 @@ async def feed_handler(message: types.Message):
         await message.answer(f"Сьогодні твого хряка вже годували {pig.feeds_today} раз(и). Більше годувати не можна!")
         return
 
-       # Перевіряємо проміжок між годуваннями (мінімум 3 хвилини для тестів)
+    # Перевіряємо проміжок між годуваннями (мінімум 3 хвилини для тестів)
     if pig.last_feed_time:
         last_feed_dt = datetime.fromisoformat(pig.last_feed_time)
         elapsed = (now - last_feed_dt).total_seconds()
@@ -36,23 +36,18 @@ async def feed_handler(message: types.Message):
             await message.answer(f"Ще рано годувати! Спробуй через {minutes_left} хвилин(и).")
             return
 
-
     # Якщо все ок — годуємо
-    
     pig.feeds_today += 1
     pig.last_feed_time = now.isoformat()
-    level_ups, new_rank = feed_pig(pig)
+    level_ups, rank_msg = feed_pig(pig)  # Тепер отримуємо повідомлення про підвищення рівня та рангу
     db.save_pig(pig)
 
-    text = f"🍽️ {pig.name} поїв і став важчим!\n"
+    # Формуємо текст для відповіді
+    text = f"Твій хряк погодований!\nНова вага: {pig.weight} кг\nДосвід: {pig.xp}\nСила: {pig.strength}\nРозум: {pig.mind}\nГодувань сьогодні: {pig.feeds_today}/{allowed_feedings}"
 
-    if level_ups:
-        text += f"\n📈 Рівень підвищено на {level_ups}!"
-    if new_rank:
-        text += f"\n🎖️ Новий ранг: {new_rank}!"
+    # Якщо є повідомлення про підвищення рівня або рангу, додаємо його до відповіді
+    if rank_msg:
+        text += f"\n{rank_msg}"
 
-    await message.answer(
-        f"Твій хряк погодований!\nНова вага: {pig.weight} кг\nДосвід: {pig.xp}\nСила: {pig.strength}\n Розум: {pig.mind}\nГодувань сьогодні: {pig.feeds_today}/{allowed_feedings}"
-    )
-
+    # Відправляємо повідомлення
     await message.answer(text)
