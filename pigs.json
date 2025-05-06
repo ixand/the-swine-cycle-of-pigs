@@ -14,7 +14,6 @@
         "last_feed_time": "2025-05-06T10:20:19.916340",
         "fights_today": 3,
         "last_fight_date": "2025-05-06",
-        "last_quest_date": "2025-05-06",
         "last_quest_time": "2025-05-06 11:23:33",
         "last_mining_time": "2025-05-05 16:55:24"
     },
@@ -33,7 +32,6 @@
         "last_feed_time": "2025-05-06T10:37:01.261964",
         "fights_today": 3,
         "last_fight_date": "2025-05-05",
-        "last_quest_date": "2025-05-06 10:58:41",
         "last_quest_time": "",
         "last_mining_time": "2025-05-05 16:58:41"
     },
@@ -52,7 +50,6 @@
         "last_feed_time": "2025-05-02T11:32:05.178344",
         "fights_today": 0,
         "last_fight_date": "",
-        "last_quest_date": "",
         "last_quest_time": "",
         "last_mining_time": ""
     },
@@ -71,7 +68,6 @@
         "last_feed_time": "2025-04-29T12:39:04.960370",
         "fights_today": 3,
         "last_fight_date": "2025-04-29",
-        "last_quest_date": "",
         "last_quest_time": "",
         "last_mining_time": ""
     },
@@ -90,7 +86,6 @@
         "last_feed_time": "2025-04-29T12:20:35.345765",
         "fights_today": 3,
         "last_fight_date": "2025-04-29",
-        "last_quest_date": "",
         "last_quest_time": "",
         "last_mining_time": ""
     },
@@ -109,7 +104,6 @@
         "last_feed_time": "2025-05-01T09:03:50.746623",
         "fights_today": 0,
         "last_fight_date": "",
-        "last_quest_date": "",
         "last_quest_time": "",
         "last_mining_time": ""
     },
@@ -118,8 +112,8 @@
         "name": "kol",
         "weight": 25,
         "mind": 1,
-        "strength": 1,
-        "health": 63,
+        "strength": 5,
+        "health": 66,
         "max_health": 100,
         "level": 1,
         "xp": 82,
@@ -128,8 +122,7 @@
         "last_feed_time": "2025-05-05T17:04:45.418242",
         "fights_today": 3,
         "last_fight_date": "2025-05-05",
-        "last_quest_date": "2025-05-05 10:58:41",
-        "last_quest_time": "",
+        "last_quest_time": "2025-05-06 15:00:55",
         "last_mining_time": "2025-05-05 17:03:58"
     }
 }

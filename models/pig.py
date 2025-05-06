@@ -17,6 +17,5 @@ class Pig:
     last_feed_time: str = ""
     fights_today: int = 0
     last_fight_date: str = ""
-    last_quest_date: str = ""
     last_quest_time: str = ""  # додали нове поле для часу останнього квесту
     last_mining_time: str = ""
