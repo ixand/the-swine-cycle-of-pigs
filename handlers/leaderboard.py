@@ -12,9 +12,10 @@ SORT_FIELDS = [
     ("mind", "🧠 Розум"),
     ("gold", "💰 Золото"),
     ("health", "❤️ Здоров'я"),
+    ("max_health", "❤️ Max"),
 ]
 
-ITEMS_PER_PAGE = 10
+ITEMS_PER_PAGE = 5
 
 def sanitize_text(text: str) -> str:
     return re.sub(r'[\ud800-\udfff]', '', text)
@@ -34,20 +35,22 @@ def format_leaderboard(pigs: List, sort_key: str, page: int, sort_name: str) -> 
 
 def get_leaderboard_keyboard(sort_index: int, current_page: int, max_page: int) -> types.InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
-    prev_sort = (sort_index - 1) % len(SORT_FIELDS)
-    next_sort = (sort_index + 1) % len(SORT_FIELDS)
 
-    builder.button(text="⬅️", callback_data=f"leaderboard_sort:{prev_sort}:{current_page}")
-    builder.button(text=SORT_FIELDS[sort_index][1], callback_data="noop")
-    builder.button(text="➡️", callback_data=f"leaderboard_sort:{next_sort}:{current_page}")
+    # Змінюємо sort на наступне при натисканні на назву поля
+    next_sort = (sort_index + 1) % len(SORT_FIELDS)
+    builder.button(
+        text=SORT_FIELDS[sort_index][1],
+        callback_data=f"leaderboard_sort:{next_sort}:{current_page}"
+    )
 
     if current_page > 0:
         builder.button(text="⬅ Назад", callback_data=f"leaderboard_page:{sort_index}:{current_page - 1}")
     if current_page < max_page:
         builder.button(text="➡ Далі", callback_data=f"leaderboard_page:{sort_index}:{current_page + 1}")
 
-    builder.adjust(3, 2)
+    builder.adjust(1, 2)
     return builder.as_markup()
+
 
 async def leaderboard_handler(message: types.Message):
     sort_index = 0
@@ -59,7 +62,11 @@ async def leaderboard_handler(message: types.Message):
         await message.answer("Поки що немає жодного хряка у грі!")
         return
 
-    pigs_sorted = sorted(all_pigs, key=lambda p: getattr(p, sort_key), reverse=True)
+    if sort_key == "level":
+        pigs_sorted = sorted(all_pigs, key=lambda p: (p.level, p.xp), reverse=True)
+    else:
+        pigs_sorted = sorted(all_pigs, key=lambda p: getattr(p, sort_key), reverse=True)
+
     max_page = max(0, (len(pigs_sorted) - 1) // ITEMS_PER_PAGE)
     text = format_leaderboard(pigs_sorted, sort_key, page, sort_name)
     keyboard = get_leaderboard_keyboard(sort_index, page, max_page)
@@ -85,7 +92,11 @@ async def leaderboard_callback_handler(callback: types.CallbackQuery):
         return
 
     sort_key, sort_name = SORT_FIELDS[sort_index]
-    pigs_sorted = sorted(all_pigs, key=lambda p: getattr(p, sort_key), reverse=True)
+    if sort_key == "level":
+        pigs_sorted = sorted(all_pigs, key=lambda p: (p.level, p.xp), reverse=True)
+    else:
+        pigs_sorted = sorted(all_pigs, key=lambda p: getattr(p, sort_key), reverse=True)
+
     max_page = max(0, (len(pigs_sorted) - 1) // ITEMS_PER_PAGE)
 
     if page < 0 or page > max_page:

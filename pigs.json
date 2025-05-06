@@ -2,37 +2,39 @@
     "869735341": {
         "user_id": 869735341,
         "name": "test",
-        "weight": 179,
+        "weight": 197,
         "mind": 2,
-        "strength": 24,
-        "health": 148,
+        "strength": 29,
+        "health": 175,
         "max_health": 160,
-        "level": 7,
-        "xp": 9,
-        "gold": 11,
-        "feeds_today": 3,
-        "last_feed_time": "2025-05-05T23:24:54.048681",
-        "fights_today": 0,
-        "last_fight_date": "2025-05-05",
-        "last_quest_date": "2025-05-05",
+        "level": 8,
+        "xp": 280,
+        "gold": 61,
+        "feeds_today": 2,
+        "last_feed_time": "2025-05-06T10:20:19.916340",
+        "fights_today": 3,
+        "last_fight_date": "2025-05-06",
+        "last_quest_date": "2025-05-06",
+        "last_quest_time": "2025-05-06 11:23:33",
         "last_mining_time": "2025-05-05 16:55:24"
     },
     "772235553": {
         "user_id": 772235553,
         "name": "[ім'я]",
-        "weight": 189,
+        "weight": 198,
         "mind": 3,
         "strength": 23,
-        "health": 180,
+        "health": 190,
         "max_health": 190,
         "level": 10,
-        "xp": 9,
-        "gold": 10,
-        "feeds_today": 4,
-        "last_feed_time": "2025-05-05T23:25:36.872103",
+        "xp": 92,
+        "gold": 30,
+        "feeds_today": 1,
+        "last_feed_time": "2025-05-06T10:37:01.261964",
         "fights_today": 3,
         "last_fight_date": "2025-05-05",
-        "last_quest_date": "",
+        "last_quest_date": "2025-05-06 10:58:41",
+        "last_quest_time": "",
         "last_mining_time": "2025-05-05 16:58:41"
     },
     "826391656": {
@@ -51,6 +53,7 @@
         "fights_today": 0,
         "last_fight_date": "",
         "last_quest_date": "",
+        "last_quest_time": "",
         "last_mining_time": ""
     },
     "1760373916": {
@@ -69,6 +72,7 @@
         "fights_today": 3,
         "last_fight_date": "2025-04-29",
         "last_quest_date": "",
+        "last_quest_time": "",
         "last_mining_time": ""
     },
     "1087968824": {
@@ -87,6 +91,7 @@
         "fights_today": 3,
         "last_fight_date": "2025-04-29",
         "last_quest_date": "",
+        "last_quest_time": "",
         "last_mining_time": ""
     },
     "1450932431": {
@@ -105,6 +110,7 @@
         "fights_today": 0,
         "last_fight_date": "",
         "last_quest_date": "",
+        "last_quest_time": "",
         "last_mining_time": ""
     },
     "985833129": {
@@ -122,7 +128,8 @@
         "last_feed_time": "2025-05-05T17:04:45.418242",
         "fights_today": 3,
         "last_fight_date": "2025-05-05",
-        "last_quest_date": "2025-05-05",
+        "last_quest_date": "2025-05-05 10:58:41",
+        "last_quest_time": "",
         "last_mining_time": "2025-05-05 17:03:58"
     }
 }

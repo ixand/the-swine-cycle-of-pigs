@@ -52,7 +52,7 @@ async def feed_handler(message: types.Message):
         text += f"\n🎖️ Новий ранг: {new_rank}!"
 
     await message.answer(
-        f"Твій хряк погодований!\nНова вага: {pig.weight} кг\nДосвід {pig.xp}\nСила: {pig.strength}\nГодувань сьогодні: {pig.feeds_today}/{allowed_feedings}"
+        f"Твій хряк погодований!\nНова вага: {pig.weight} кг\nДосвід: {pig.xp}\nСила: {pig.strength}\n Розум: {pig.mind}\nГодувань сьогодні: {pig.feeds_today}/{allowed_feedings}"
     )
 
     await message.answer(text)

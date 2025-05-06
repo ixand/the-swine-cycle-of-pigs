@@ -22,6 +22,8 @@ async def stats_handler(message: types.Message):
 
     rank = get_rank(pig)
 
+    health = round((pig.health / pig.max_health) * 100,2)
+
     owner = "Твій хряк" if is_self else f"Хряк {pig.name} користувача @{target_user.username or target_user.first_name}"
 
     await message.answer(
@@ -31,7 +33,7 @@ async def stats_handler(message: types.Message):
         f"✨ Досвід: {pig.xp} XP\n"
         f"⚔️ Сила: {pig.strength}\n"
         f"🧠 Розум: {pig.mind}\n"
-        f"❤️ Здоров'я: {pig.health}\n"
+        f"❤️ Здоров'я: {pig.health} - {health}%\n"
         f"🪙 Золото: {pig.gold}\n"
         f"⚖️ Вага: {pig.weight} кг"
     )
