@@ -51,9 +51,7 @@ async def sparring_accept_handler(callback: types.CallbackQuery):
         await callback.answer("Обидва хряки повинні мати мінімум 13 ❤️!", show_alert=True)
         return
     
-    if pig1.xp < 15 or pig2.xp < 15:
-        await callback.answer("Обидва хряки повинні мати мінімум 15 📊!", show_alert=True)
-        return
+   
 
     await callback.answer("Суперник прийняв виклик! Починається бій...")
     del pending_sparrings[opponent_id]
