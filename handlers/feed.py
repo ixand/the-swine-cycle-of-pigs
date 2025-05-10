@@ -1,53 +1,50 @@
 from aiogram import types
 from storage import db
 from services.pig_service import feed_pig, get_allowed_feedings
-from datetime import datetime, timedelta
+from datetime import datetime
+from utils.constants import FEED_COOLDOWN_MINUTES
+from utils.pig_helpers import ensure_pig_exists
 
 async def feed_handler(message: types.Message):
     user_id = message.from_user.id
-    pig = db.get_pig(user_id)
-
+    pig = await ensure_pig_exists(message, user_id)
     if not pig:
-        await message.answer("Ти ще не маєш хряка! Використай /start")
         return
 
     now = datetime.now()
-
-    # Якщо новий день — обнуляємо кількість годувань
     if not pig.last_feed_time or now.strftime("%Y-%m-%d") != pig.last_feed_time[:10]:
         pig.feeds_today = 0
 
     allowed_feedings = get_allowed_feedings(pig)
 
-    # Перевіряємо кількість годувань на день
     if pig.feeds_today >= allowed_feedings:
         await message.answer(f"Сьогодні твого хряка вже годували {pig.feeds_today} раз(и). Більше годувати не можна!")
         return
 
-    # Перевіряємо проміжок між годуваннями (мінімум 3 хвилини для тестів)
     if pig.last_feed_time:
         last_feed_dt = datetime.fromisoformat(pig.last_feed_time)
         elapsed = (now - last_feed_dt).total_seconds()
-
-        cooldown_seconds = 0.1 * 60  # 60 хвилин
+        cooldown_seconds = FEED_COOLDOWN_MINUTES * 60
 
         if elapsed < cooldown_seconds:
-            minutes_left = int((cooldown_seconds - elapsed) // 60) + 1  # округлюємо вгору
+            minutes_left = int((cooldown_seconds - elapsed) // 60) + 1
             await message.answer(f"Ще рано годувати! Спробуй через {minutes_left} хвилин(и).")
             return
 
-    # Якщо все ок — годуємо
     pig.feeds_today += 1
     pig.last_feed_time = now.isoformat()
-    level_ups, rank_msg = feed_pig(pig)  # Тепер отримуємо повідомлення про підвищення рівня та рангу
+    level_ups, rank_msg = feed_pig(pig)
     db.save_pig(pig)
 
-    # Формуємо текст для відповіді
-    text = f"Твій хряк погодований!\nНова вага: {pig.weight} кг\nДосвід: {pig.xp}\nСила: {pig.strength}\nРозум: {pig.mind}\nГодувань сьогодні: {pig.feeds_today}/{allowed_feedings}"
-
-    # Якщо є повідомлення про підвищення рівня або рангу, додаємо його до відповіді
+    text = (
+        f"Твій хряк погодований!\n"
+        f"Нова вага: {pig.weight} кг\n"
+        f"Досвід: {pig.xp}\n"
+        f"Сила: {pig.strength}\n"
+        f"Розум: {pig.mind}\n"
+        f"Годувань сьогодні: {pig.feeds_today}/{allowed_feedings}"
+    )
     if rank_msg:
         text += f"\n{rank_msg}"
 
-    # Відправляємо повідомлення
     await message.answer(text)

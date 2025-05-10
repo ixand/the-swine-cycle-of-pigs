@@ -10,3 +10,4 @@ async def start_handler(message: types.Message):
         pig = init_pig(user_id)
         db.save_pig(pig)
         await message.answer("Створено нового хряка! Використай /name [ім'я] щоб назвати його.")
+

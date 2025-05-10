@@ -97,4 +97,16 @@ def fight(pig1: Pig, pig2: Pig) -> Tuple[Pig | None, Pig | None, int]:
     xp_transfer = max(5, min(15, loser.xp // 5))
     winner.xp += xp_transfer
     loser.xp = max(0, loser.xp - xp_transfer)
-    return winner, loser, xp_transfer
+
+    death_message = handle_death(loser)
+    
+    return winner, loser, xp_transfer, death_message
+
+def handle_death(pig: Pig) -> str:
+    """Обробляє смерть хряка і відродження на рівні 1."""
+    if pig.health <= 0:
+        pig.level = 1
+        pig.xp = 10
+        pig.health = 100
+        return f"☠️ {pig.name} помер і був відроджений на рівні 1!"
+    return ""

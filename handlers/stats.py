@@ -1,6 +1,7 @@
 from aiogram import types
 from storage import db
 from services.pig_service import get_rank
+from utils.pig_helpers import get_health_percent
 
 async def stats_handler(message: types.Message):
     if message.reply_to_message:
@@ -21,9 +22,7 @@ async def stats_handler(message: types.Message):
         return
 
     rank = get_rank(pig)
-
-    health = round((pig.health / pig.max_health) * 100,2)
-
+    health = get_health_percent(pig)
     owner = "Твій хряк" if is_self else f"Хряк {pig.name} користувача @{target_user.username or target_user.first_name}"
 
     await message.answer(
