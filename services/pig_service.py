@@ -108,5 +108,6 @@ def handle_death(pig: Pig) -> str:
         pig.level = 1
         pig.xp = 10
         pig.health = 100
+        pig.max_health = pig.health
         return f"☠️ {pig.name} помер і був відроджений на рівні 1!"
     return ""

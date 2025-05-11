@@ -23,6 +23,8 @@ async def sparring_request_handler(message: types.Message):
         f"🐷 {pig.name} викликає на спаринг!\nНатисни кнопку, щоб прийняти виклик!",
         reply_markup=builder.as_markup()
     )
+    pending_sparrings[user_id] = (sent.chat.id, sent.message_id)
+
 
 async def sparring_accept_handler(callback: types.CallbackQuery):
     data = callback.data
@@ -54,6 +56,13 @@ async def sparring_accept_handler(callback: types.CallbackQuery):
    
 
     await callback.answer("Суперник прийняв виклик! Починається бій...")
+
+    chat_id, message_id = pending_sparrings.pop(opponent_id)
+    try:
+        await callback.bot.edit_message_reply_markup(chat_id=chat_id, message_id=message_id, reply_markup=None)
+    except:
+        pass  # Якщо вже відредаговано вручну
+
     del pending_sparrings[opponent_id]
     await callback.message.edit_reply_markup(reply_markup=None)
 
