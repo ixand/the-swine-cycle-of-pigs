@@ -1,12 +1,13 @@
 import asyncio
+import random
 from aiogram import types
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from storage import db
 from services.pig_service import fight, check_level_up, get_rank
 from utils.pig_helpers import ensure_pig_exists
 from utils.fight_templates import get_fight_templates
-import random
 
+# Зберігаємо: {opponent_id: (chat_id, message_id)}
 pending_sparrings = {}
 
 async def sparring_request_handler(message: types.Message):
@@ -17,14 +18,14 @@ async def sparring_request_handler(message: types.Message):
 
     builder = InlineKeyboardBuilder()
     builder.button(text="Прийняти виклик 🐖", callback_data=f"accept_sparring:{user_id}")
-    pending_sparrings[user_id] = True
 
-    await message.answer(
+    sent_message = await message.answer(
         f"🐷 {pig.name} викликає на спаринг!\nНатисни кнопку, щоб прийняти виклик!",
         reply_markup=builder.as_markup()
     )
-    pending_sparrings[user_id] = (sent.chat.id, sent.message_id)
 
+    # Зберігаємо chat_id та message_id повідомлення з кнопкою
+    pending_sparrings[user_id] = (sent_message.chat.id, sent_message.message_id)
 
 async def sparring_accept_handler(callback: types.CallbackQuery):
     data = callback.data
@@ -39,7 +40,10 @@ async def sparring_accept_handler(callback: types.CallbackQuery):
         return
 
     if opponent_id not in pending_sparrings:
-        await callback.answer("Цей виклик уже неактивний або був прийнятий.", show_alert=True)
+        try:
+            await callback.message.edit_reply_markup(reply_markup=None)
+        except:
+            pass
         return
 
     pig1 = db.get_pig(opponent_id)
@@ -52,19 +56,21 @@ async def sparring_accept_handler(callback: types.CallbackQuery):
     if pig1.health < 13 or pig2.health < 13:
         await callback.answer("Обидва хряки повинні мати мінімум 13 ❤️!", show_alert=True)
         return
-    
-   
 
     await callback.answer("Суперник прийняв виклик! Починається бій...")
 
+    # Видаляємо кнопку з усіх чатів
     chat_id, message_id = pending_sparrings.pop(opponent_id)
     try:
         await callback.bot.edit_message_reply_markup(chat_id=chat_id, message_id=message_id, reply_markup=None)
     except:
-        pass  # Якщо вже відредаговано вручну
+        pass
 
-    del pending_sparrings[opponent_id]
-    await callback.message.edit_reply_markup(reply_markup=None)
+    # Видаляємо кнопку і з поточного повідомлення (на випадок, якщо це інший користувач)
+    try:
+        await callback.message.edit_reply_markup(reply_markup=None)
+    except:
+        pass
 
     templates = get_fight_templates(pig1.name, pig2.name)
     selected_events = random.sample(templates, k=5)
@@ -86,6 +92,7 @@ async def sparring_accept_handler(callback: types.CallbackQuery):
         f"➕ +{xp_transfer} XP для {winner.name}\n"
         f"➖ -{xp_transfer} XP для {loser.name}"
     )
+
     if death_message:
         result_text += f"\n{death_message}"
 
