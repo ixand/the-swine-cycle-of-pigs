@@ -35,8 +35,17 @@ async def mining_handler(message: types.Message):
     if "damage" in result:
         pig.health = max(0, pig.health - result["damage"])
         weight_loss = random.randint(1, 15)
-        pig.weight = max(1, pig.weight - weight_loss)
+        pig.weight -= weight_loss
+
         text += f"\n💥 Він також схуд на {weight_loss} кг!"
+
+        # Перевірка смерті від виснаження
+        if pig.weight < 1:
+            pig.weight = 1  # технічно не нуль, але смерть буде викликана
+            pig.health = 0
+            text += "\n☠️ Хряк настільки виснажився, що знепритомнів!"
+        
+        # Обробка смерті
         death_message = handle_death(pig)
         if death_message:
             text += f"\n{death_message}"
