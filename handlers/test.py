@@ -21,7 +21,20 @@ async def add_handler(message: types.Message, command: CommandObject):
         return
 
     field = parts[0].lower()
-    amount = int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else 0
+    
+    parts = args.split()
+    if len(parts) < 2:
+        await message.answer("⚠️ Використай: /add [тип] [значення]")
+        return
+
+    field = parts[0].lower()
+
+    try:
+        amount = int(parts[1])
+    except ValueError:
+        await message.answer("❌ Значення має бути числом (навіть від'ємним).")
+        return
+
 
     updated = True
     msg = ""
