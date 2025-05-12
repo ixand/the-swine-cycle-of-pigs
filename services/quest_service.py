@@ -59,13 +59,28 @@ QUESTS = [
 
 def apply_quest(pig: Pig):
     quest = random.choice(QUESTS)
+    
+    original_level = pig.level  # зберігаємо поточний рівень до змін
+
+    # Застосовуємо ефекти квесту
     for key, value in quest["effects"].items():
         setattr(pig, key, getattr(pig, key) + value)
-    
-    # Викликаємо check_level_up і отримуємо повідомлення
+
+    # Основна перевірка: якщо XP підвищився
     level_ups, rank_msg = check_level_up(pig)
+
+    # Додаткова перевірка, якщо рівень змінився напряму через квест
+    if pig.level > original_level:
+        # ще раз викликаємо check_level_up, щоб оновити max_health, силу тощо
+        second_level_ups, second_rank_msg = check_level_up(pig)
+        level_ups += second_level_ups
+        if second_rank_msg:
+            if rank_msg:
+                rank_msg += f"\n{second_rank_msg}"
+            else:
+                rank_msg = second_rank_msg
 
     # Збереження останнього часу квесту
     pig.last_quest_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
-    return quest, level_ups, rank_msg  # Повертаємо результат, включаючи повідомлення
+    return quest, level_ups, rank_msg
