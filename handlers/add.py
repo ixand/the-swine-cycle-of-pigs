@@ -2,11 +2,11 @@ from aiogram import types
 from aiogram.filters import CommandObject
 from storage import supabase_storage as db
 from utils.pig_helpers import ensure_pig_exists
+from services.pig_service import check_level_up
 
 async def add_handler(message: types.Message, command: CommandObject):
     user_id = message.from_user.id
     pig = await ensure_pig_exists(message, user_id)
-
     if not pig:
         return
 
@@ -29,6 +29,12 @@ async def add_handler(message: types.Message, command: CommandObject):
     if field == "xp":
         pig.xp += amount
         msg = f"✨ Додано {amount} XP"
+    elif field == "lvl":
+        pig.level += amount
+        msg = f"⬆️ Додано {amount} рівнів"
+        level_ups, rank_msg = check_level_up(pig)
+        if level_ups:
+            msg += f"\n🎉 {rank_msg or 'Хряк отримав бонуси за нові рівні!'}"
     elif field == "str":
         pig.strength += amount
         msg = f"⚔️ Додано {amount} сили"
