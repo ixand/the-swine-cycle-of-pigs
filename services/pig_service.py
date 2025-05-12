@@ -104,10 +104,12 @@ def fight(pig1: Pig, pig2: Pig) -> Tuple[Pig | None, Pig | None, int]:
 
 def handle_death(pig: Pig) -> str:
     """Обробляє смерть хряка і відродження на рівні 1."""
-    if pig.health <= 0:
+    if pig.health <= 0 or pig.weight < 1:
         pig.level = 1
         pig.xp = 10
         pig.health = 100
-        pig.max_health = pig.health
-        return f"☠️ {pig.name} помер і був відроджений на рівні 1!"
+        pig.max_health = 100
+        pig.weight = 10  # відновлюємо базову масу
+        return f"☠️ {pig.name} помер {'від виснаження' if pig.weight < 1 else 'у бою'} і був відроджений на рівні 1!"
     return ""
+

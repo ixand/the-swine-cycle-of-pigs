@@ -39,11 +39,10 @@ async def mining_handler(message: types.Message):
 
         text += f"\n💥 Він також схуд на {weight_loss} кг!"
 
-        # Перевірка смерті від виснаження
-        if pig.weight < 1:
-            pig.weight = 1  # технічно не нуль, але смерть буде викликана
-            pig.health = 0
-            text += "\n☠️ Хряк настільки виснажився, що знепритомнів!"
+        death_message = handle_death(pig)
+        if death_message:
+            text += f"\n{death_message}"
+
         
         # Обробка смерті
         death_message = handle_death(pig)
