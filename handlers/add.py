@@ -4,7 +4,9 @@ from storage import supabase_storage as db
 from utils.pig_helpers import ensure_pig_exists
 
 async def add_handler(message: types.Message, command: CommandObject):
-    pig = await ensure_pig_exists(message)
+    user_id = message.from_user.id
+    pig = await ensure_pig_exists(message, user_id)
+
     if not pig:
         return
 
