@@ -1,5 +1,5 @@
 from aiogram import types
-from storage import db
+from storage import supabase_storage as db
 
 async def ensure_pig_exists(message: types.Message, user_id: int):
     pig = db.get_pig(user_id)

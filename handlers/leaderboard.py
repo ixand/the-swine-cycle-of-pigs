@@ -1,6 +1,6 @@
 from aiogram import types
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from storage import db
+from storage import supabase_storage as db
 from typing import List
 import re
 from utils.constants import LEADERBOARD_SORT_FIELDS

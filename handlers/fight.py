@@ -2,7 +2,7 @@ import asyncio
 import random
 from aiogram import types
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from storage import db
+from storage import supabase_storage as db
 from services.pig_service import fight, check_level_up, get_rank
 from utils.pig_helpers import ensure_pig_exists
 from utils.fight_templates import get_fight_templates

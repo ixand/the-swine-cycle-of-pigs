@@ -1,5 +1,5 @@
 from aiogram import types
-from storage import db
+from storage import supabase_storage as db
 from services.quest_service import apply_quest
 from datetime import datetime, timedelta
 from utils.constants import QUEST_COOLDOWN_HOURS

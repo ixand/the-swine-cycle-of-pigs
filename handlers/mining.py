@@ -1,7 +1,7 @@
 from aiogram import types
 from datetime import datetime, timedelta
 import random
-from storage import db
+from storage import supabase_storage as db
 from utils.pig_helpers import ensure_pig_exists
 from services.pig_service import handle_death
 from utils.constants import MINING_COOLDOWN_MINUTES

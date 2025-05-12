@@ -1,5 +1,5 @@
 from aiogram import types
-from storage import db
+from storage import supabase_storage as db
 from services.pig_service import get_rank
 from utils.pig_helpers import get_health_percent
 

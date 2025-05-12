@@ -1,5 +1,5 @@
 from aiogram import types
-from storage import db
+from storage import supabase_storage as db
 from services.pig_service import feed_pig, get_allowed_feedings
 from datetime import datetime
 from utils.constants import FEED_COOLDOWN_MINUTES

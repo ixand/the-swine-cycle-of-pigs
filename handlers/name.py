@@ -1,5 +1,5 @@
 from aiogram import types
-from storage import db
+from storage import supabase_storage as db
 from utils.pig_helpers import ensure_pig_exists
 
 async def name_handler(message: types.Message):

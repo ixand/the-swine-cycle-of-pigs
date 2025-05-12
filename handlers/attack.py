@@ -1,5 +1,5 @@
 from aiogram import types
-from storage import db
+from storage import supabase_storage as db
 from services.pig_service import attack, check_level_up, get_rank, handle_death
 from utils.pig_helpers import ensure_pig_exists
 from utils.constants import ATTACK_LIMIT_PER_DAY

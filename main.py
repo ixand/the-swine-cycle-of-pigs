@@ -1,7 +1,7 @@
 import asyncio
 from aiogram import Bot, Dispatcher
 from bot import setup_handlers
-from storage import db
+from storage import supabase_storage as db
 from dotenv import load_dotenv
 from aiohttp import web
 import os
@@ -19,7 +19,6 @@ async def start_web_server():
 
 async def main():
     load_dotenv()
-    db.load_db()
 
     bot = Bot(token=os.getenv("TELEGRAM_TOKEN"))
     dp = Dispatcher()
