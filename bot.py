@@ -1,6 +1,6 @@
 from aiogram import Router, F
 from aiogram.filters import Command
-from handlers import start, feed, name, stats, fight, leaderboard, attack, help, quest, mining
+from handlers import start, feed, name, stats, fight, leaderboard, attack, help, quest, mining, add
 
 router = Router()
 
@@ -18,4 +18,5 @@ def setup_handlers():
     router.message(Command("fight"))(fight.sparring_request_handler)
     router.callback_query()(fight.sparring_accept_handler)  # Додаємо колбек на кнопки
     router.message(Command("help"))(help.help_handler)
+    router.message.register(add.add_handler, Command("add"))
     return router
