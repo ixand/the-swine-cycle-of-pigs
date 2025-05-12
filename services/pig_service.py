@@ -113,3 +113,31 @@ def handle_death(pig: Pig) -> str:
         return f"☠️ {pig.name} помер {'від виснаження' if pig.weight < 1 else 'у бою'} і був відроджений на рівні 1!"
     return ""
 
+def check_level_down(pig: Pig) -> str:
+    """Знижує рівень, якщо XP стало менше 0. Не дозволяє рівень нижче 1."""
+    message = ""
+    while pig.xp < 0 and pig.level > 1:
+        pig.level -= 1
+        pig.xp += 100  # умовна кількість XP, яка потрібна на кожен рівень
+        message += f"⬇️ Хряк втратив рівень! Тепер рівень: {pig.level}\n"
+
+    # Обмежуємо XP мінімумом 0 на 1 рівні
+    if pig.level == 1 and pig.xp < 0:
+        pig.xp = 0
+
+    return message
+
+def is_valid_change(field: str, current_value: int, delta: int) -> bool:
+    """Перевіряє, чи дозволено змінювати значення поля на delta."""
+    new_value = current_value + delta
+
+    limits = {
+        "strength": 1,
+        "mind": 1,
+        "gold": 0,
+    }
+
+    if field in limits:
+        return new_value >= limits[field]
+
+    return True  # якщо немає обмежень — зміна дозволена
