@@ -174,3 +174,9 @@ def is_valid_change(field: str, current_value: int, delta: int) -> bool:
         return False
 
     return True
+
+MAX_INT32 = 2_147_483_647
+
+def exceeds_max_int(field: str, current_value: int, delta: int) -> bool:
+    """Повертає True, якщо результат зміни перевищує максимум int32."""
+    return (current_value + delta) > MAX_INT32
