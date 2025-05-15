@@ -77,14 +77,31 @@ def check_level_up(pig: Pig) -> Tuple[int, str]:
 
 
 def get_rank(pig: Pig) -> str:
-    if pig.level >= 20:
-        return "Легенда ферми 🐲"
+    if pig.level >= 100:
+        return "🌟 Живий Міф Свиноферми"
+    elif pig.level >= 90:
+        return "👑 Свинячий Цар"
+    elif pig.level >= 80:
+        return "🔥 Повелитель Хряків"
+    elif pig.level >= 70:
+        return "⚡ Легендарний Кабан"
+    elif pig.level >= 60:
+        return "🐲 Легенда ферми"
+    elif pig.level >= 50:
+        return "🦾 Незламний Хряк"
+    elif pig.level >= 40:
+        return "🛡️ Ветеран бойових свиней"
+    elif pig.level >= 30:
+        return "🥇 Чемпіон села"
+    elif pig.level >= 20:
+        return "🐽 Могутній хряк"
     elif pig.level >= 10:
-        return "Могутній хряк 🐽"
+        return "🐗 Молодий кабан"
     elif pig.level >= 5:
-        return "Молодий кабан 🐗"
+        return "🐖 Розумне поросятко"
     else:
-        return "Маленьке поросятко 🐖"
+        return "🐷 Маленьке поросятко"
+
 
 def fight(pig1: Pig, pig2: Pig) -> Tuple[Pig | None, Pig | None, int]:
     score1 = pig1.strength * 1.5 + pig1.mind + (pig1.weight / 10)+ pig1.health / 10 + random.uniform(0, 5)
@@ -131,13 +148,29 @@ def is_valid_change(field: str, current_value: int, delta: int) -> bool:
     """Перевіряє, чи дозволено змінювати значення поля на delta."""
     new_value = current_value + delta
 
-    limits = {
+    # нижні межі
+    min_limits = {
         "strength": 1,
         "mind": 1,
         "gold": 0,
+        "level": 1,
+        "weight": 1,
     }
 
-    if field in limits:
-        return new_value >= limits[field]
+    # верхня межа для integer (max int32)
+    MAX_INT32 = 2_147_483_647
+    max_limits = {
+        "strength": MAX_INT32,
+        "mind": MAX_INT32,
+        "gold": MAX_INT32,
+        "level": MAX_INT32,
+        "weight": MAX_INT32,
+    }
 
-    return True  # якщо немає обмежень — зміна дозволена
+    if field in min_limits and new_value < min_limits[field]:
+        return False
+
+    if field in max_limits and new_value > max_limits[field]:
+        return False
+
+    return True
