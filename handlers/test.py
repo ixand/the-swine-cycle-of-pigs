@@ -19,12 +19,12 @@ async def add_handler(message: types.Message, command: CommandObject):
 
     args = command.args
     if not args:
-        await message.answer("⚠️ Приклад: /add xp 100")
+        await message.answer("⚠️ Приклад: /test xp 100")
         return
 
     parts = args.split()
     if len(parts) < 2:
-        await message.answer("⚠️ Використай: /add [тип] [значення]")
+        await message.answer("⚠️ Використай: /test [тип] [значення]")
         return
 
     field = parts[0].lower()
