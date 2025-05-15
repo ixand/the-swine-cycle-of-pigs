@@ -14,7 +14,7 @@ async def bug_report_handler(message: Message, command: CommandObject):
         return
 
     author = f"{user.full_name} (@{user.username}) [ID: {user.id}]"
-    report = f"🐞 *Надійшло повідомлення про баг:*\n\n📨 _{text}_\n\n👤 Від: {author}"
+    report = f"🐞 *Надійшло повідомлення про баг:*\n\n📨 {text}\n\n👤 Від: {author}"
 
     await message.bot.send_message(
         chat_id=ADMIN_CHAT_ID,
