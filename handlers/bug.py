@@ -19,7 +19,7 @@ async def bug_report_handler(message: Message, command: CommandObject):
     await message.bot.send_message(
         chat_id=ADMIN_CHAT_ID,
         text=report,
-        parse_mode="Markdown"
+        parse_mode="HTML"
     )
 
     await message.answer("✅ Дякую! Твоє повідомлення про баг надіслано розробникам.")
