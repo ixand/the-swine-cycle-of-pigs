@@ -1,9 +1,10 @@
 from aiogram import types
 from aiogram.filters import CommandObject
 from aiogram.types import Message
+import html
 
-# заміни на ID адмінського чату
 ADMIN_CHAT_ID = -1002500459432
+BUG_TOPIC_ID = 9121
 
 async def bug_report_handler(message: Message, command: CommandObject):
     user = message.from_user
@@ -13,13 +14,21 @@ async def bug_report_handler(message: Message, command: CommandObject):
         await message.answer("❗ Будь ласка, надішли опис проблеми. Наприклад:\n/bug бот не відповідає після команди /fight")
         return
 
-    author = f"{user.full_name} (@{user.username}) [ID: {user.id}]"
-    report = f"🐞 *Надійшло повідомлення про баг:*\n\n📨 {text}\n\n👤 Від: {author}"
+    author = f"{user.full_name} (@{user.username or 'no username'}) [ID: {user.id}]"
+    text_escaped = html.escape(text)
+    author_escaped = html.escape(author)
+
+    report = (
+        f"🐞 <b>Надійшло повідомлення про баг:</b>\n\n"
+        f"📨 <i>{text_escaped}</i>\n\n"
+        f"👤 Від: {author_escaped}"
+    )
 
     await message.bot.send_message(
         chat_id=ADMIN_CHAT_ID,
         text=report,
-        parse_mode="HTML"
+        parse_mode="HTML",
+        message_thread_id=BUG_TOPIC_ID  # ⬅️ це головне
     )
 
     await message.answer("✅ Дякую! Твоє повідомлення про баг надіслано розробникам.")
